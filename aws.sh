@@ -11,6 +11,7 @@ if [ "${PYTHON_PACKAGE}" -eq "0" ]
      echo "Installation python..."
      apt-get install python -y
 fi
+
 echo "Installation PIP"
 curl -O https://bootstrap.pypa.io/get-pip.py
 python get-pip.py  --user
@@ -23,6 +24,7 @@ aws --version
 
 # pip install pip --upgrade --user
 # pip install awscli --upgrade --user
+
 echo "Enabling aws autocomplete"
 AWS_COMPLETER=$(which aws_completer)
 complete -C ""${AWS_COMPLETER}"" aws
@@ -109,7 +111,7 @@ DOMAINNAME="kamaok.org.ua"
 
 function creatingec2 () {
 echo "Creating 3 EC2-instances {a,b,c}.$DOMAINNAME type t2.micro  in subnet demo_public_net with security group demo_public_sg..."
-###aws ec2 run-instances --image-id ami-25110f45 --count 3 --instance-type t2.micro --key-name my_aws_ssh_key --security-group-ids ${GROUP_ID} --subnet-id ${SUBNET_ID}
+#aws ec2 run-instances --image-id ami-25110f45 --count 3 --instance-type t2.micro --key-name my_aws_ssh_key --security-group-ids ${GROUP_ID} --subnet-id ${SUBNET_ID}
 aws ec2 run-instances --image-id ami-25110f45 --count 1 --instance-type t2.micro --key-name my_aws_ssh_key --security-group-ids ${GROUP_ID} --subnet-id ${SUBNET_ID} --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=a.$DOMAINNAME}]"
 aws ec2 run-instances --image-id ami-25110f45 --count 1 --instance-type t2.micro --key-name my_aws_ssh_key --security-group-ids ${GROUP_ID} --subnet-id ${SUBNET_ID} --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=b.$DOMAINNAME}]"
 aws ec2 run-instances --image-id ami-25110f45 --count 1 --instance-type t2.micro --key-name my_aws_ssh_key --security-group-ids ${GROUP_ID} --subnet-id ${SUBNET_ID} --tag-specifications "ResourceType=instance,Tags=[{Key=Name,Value=c.$DOMAINNAME}]"
@@ -133,7 +135,7 @@ for servername in {a,b,c}.$DOMAINNAME; do
 		        then
 				echo "${SERVICE}-service is running on the server $servername"
 			else
-				echo "${SERVICE} is NOT running on the server $servername"
+				echo "${SERVICE}-service is NOT running on the server $servername"
 		 fi
 	PORT=22
 	SERVICE="SSH"
@@ -142,7 +144,7 @@ for servername in {a,b,c}.$DOMAINNAME; do
                         then
                                 echo "${SERVICE}-service is running on the server $servername"
                         else
-                                echo "${SERVICE} is NOT running on the server $servername"
+                                echo "${SERVICE}-service is NOT running on the server $servername"
                  fi
 done
 }
@@ -172,8 +174,8 @@ aws ec2 terminate-instances --instance-ids ${STOPPED_INSTANCE_ID}
 function cleanami () {
 echo "Installation amicleaner from https://github.com/bonclay7/aws-amicleaner"
 #pip install pip --upgrade --user
-#pip install future
-#pip install aws-amicleaner
+pip install future
+pip install aws-amicleaner
 #ln -s /usr/local/bin/aws_completer ~/.local/bin/
 
 amicleaner --mapping-key name --mapping-values ${STOPPED_INSTANCE_NAME} --full-report --keep-previous 0 --ami-min-days 7 --force-delete
