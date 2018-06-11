@@ -1,2 +1,2 @@
 # aws-practice
-Practiсe task with AWS
+Practiсe tasks with AWS
